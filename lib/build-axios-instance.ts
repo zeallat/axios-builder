@@ -85,4 +85,6 @@ export const buildAxiosInstance = (params: Params = DEFAULT_PARAMS) => {
             errorLoggingInterceptor,
         );
     }
+
+    return instance;
 }
