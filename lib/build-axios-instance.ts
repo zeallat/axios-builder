@@ -1,12 +1,12 @@
 import {
     Axios,
-    AxiosError,
     AxiosRequestConfig,
-    AxiosResponse,
 } from 'axios';
-import { format } from 'date-fns';
 import _ from 'lodash';
 import curlirize from 'axios-curlirize';
+import { requestLoggingIntercepter } from './request-logging-intercepter';
+import { responseLoggingIntercepter } from './response-logging-intercepter';
+import { errorLoggingInterceptor } from './error-logging-interceptor';
 
 interface Params {
     axiosRequestConfig?: AxiosRequestConfig;
@@ -26,46 +26,6 @@ const DEFAULT_PARAMS: Params = {
     loggingEnabled:true,
 };
 
-
-// Request 로깅 인터셉터
-const requestLoggingIntercepter = (config: AxiosRequestConfig) => {
-
-    console.groupCollapsed(
-        `[${format(new Date(),'HH:mm:ss.SSS')}][Request][${config.method?.toUpperCase()}] ${config.baseURL}${
-            config.url
-        }`,
-    );
-    const {headers, params, data} = config;
-    console.log('[headers]', headers);
-    console.log('[params]', params);
-    console.log('[data]', data);
-    console.groupEnd();
-    return config;
-};
-
-// Response 로깅 인터셉터
-const responseLoggingIntercepter = (response: AxiosResponse) => {
-    console.groupCollapsed(
-        `[${format(new Date(),'HH:mm:ss.SSS')}][Response][${response.config.method?.toUpperCase()}][${
-            response.status
-        }] ${response.config.baseURL}${response.config.url}`,
-    );
-    console.log('[data]', response.data);
-    console.groupEnd();
-    return response;
-};
-
-export const isAxiosError = (value: any): value is AxiosError =>
-    value?.isAxiosError;
-
-// Error 로깅 인터셉터
-const errorLoggingInterceptor = (error: any) => {
-    // Axios 오류일 경우 리스폰스 로깅 인터셉터에게 위임합니다.
-    if (isAxiosError(error) && error.response) {
-        error.response = responseLoggingIntercepter(error.response);
-    }
-    throw error;
-};
 
 export const buildAxiosInstance = (params: Params = DEFAULT_PARAMS) => {
     const {axiosRequestConfig,loggingEnabled} = <Params>(_.defaultsDeep(params, DEFAULT_PARAMS));
