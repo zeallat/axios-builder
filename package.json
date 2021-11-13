@@ -21,5 +21,8 @@
   "homepage": "https://github.com/zeallat/axios-builder#readme",
   "devDependencies": {
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "axios": "^0.24.0"
   }
 }
