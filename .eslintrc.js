@@ -1,3 +1,3 @@
 module.exports = {
-    extends:['zeallat-base']
-}
+  extends: ['zeallat-base'],
+};
