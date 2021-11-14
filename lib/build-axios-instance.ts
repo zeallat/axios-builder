@@ -1,6 +1,6 @@
 import {
-    Axios,
-    AxiosRequestConfig,
+  Axios,
+  AxiosRequestConfig,
 } from 'axios';
 import _ from 'lodash';
 import curlirize from 'axios-curlirize';
@@ -16,35 +16,33 @@ interface Params {
 const DEFAULT_TIME_OUT_IN_MILLIS = 30 * 1000;
 
 const DEFAULT_PARAMS: Params = {
-    axiosRequestConfig:{
-        timeout:DEFAULT_TIME_OUT_IN_MILLIS,
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
+  axiosRequestConfig: {
+    timeout: DEFAULT_TIME_OUT_IN_MILLIS,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    loggingEnabled:true,
+  },
+  loggingEnabled: true,
 };
 
-
 export const buildAxiosInstance = (params: Params = DEFAULT_PARAMS) => {
-    const {axiosRequestConfig,loggingEnabled} = <Params>(_.defaultsDeep(params, DEFAULT_PARAMS));
-    const instance =  new Axios(axiosRequestConfig);
+  const { axiosRequestConfig, loggingEnabled } = <Params>(_.defaultsDeep(params, DEFAULT_PARAMS));
+  const instance = new Axios(axiosRequestConfig);
 
+  // Logging 설정
+  if (loggingEnabled) {
+    // @ts-ignore
+    curlirize(instance);
+    instance.interceptors.request.use(
+      requestLoggingIntercepter,
+      errorLoggingInterceptor,
+    );
+    instance.interceptors.response.use(
+      responseLoggingIntercepter,
+      errorLoggingInterceptor,
+    );
+  }
 
-    // Logging 설정
-    if (loggingEnabled) {
-        // @ts-ignore
-        curlirize(axios);
-        instance.interceptors.request.use(
-            requestLoggingIntercepter,
-            errorLoggingInterceptor,
-        );
-        instance.interceptors.response.use(
-            responseLoggingIntercepter,
-            errorLoggingInterceptor,
-        );
-    }
-
-    return instance;
-}
+  return instance;
+};
