@@ -1,7 +1,4 @@
-import {
-  Axios,
-  AxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import _ from 'lodash';
 import curlirize from 'axios-curlirize';
 import { requestLoggingIntercepter } from './request-logging-intercepter';
@@ -28,7 +25,7 @@ const DEFAULT_PARAMS: Params = {
 
 export const buildAxiosInstance = (params: Params = DEFAULT_PARAMS) => {
   const { axiosRequestConfig, loggingEnabled } = <Params>(_.defaultsDeep(params, DEFAULT_PARAMS));
-  const instance = new Axios(axiosRequestConfig);
+  const instance = axios.create(axiosRequestConfig);
 
   // Logging 설정
   if (loggingEnabled) {
